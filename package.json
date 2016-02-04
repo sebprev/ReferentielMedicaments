@@ -9,14 +9,14 @@
     "openshift"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "sebprev",
+    "email": "webmuret@gmail.com",
+    "url": "http://sebastien.prevost31.free.fr"
   },
-  "homepage": "http://www.openshift.com/",
+  "homepage": "http://nodejs-sebprev.rhcloud.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openshift/origin-server"
+    "url": "https://github.com/sebprev/node_mongo_start.git"
   },
 
   "engines": {
@@ -25,7 +25,10 @@
   },
 
   "dependencies": {
-    "express": "~3.4.4"
+    "express": "~3.4.4",
+    "mongodb": "~2.1.4",
+    "body-parser": "> 1.0.0",
+    "method-override": "> 1.0.0"
   },
   "devDependencies": {},
   "bundleDependencies": [],
