@@ -44,7 +44,9 @@ var App = function(){
 
     // Web app logic
     self.routes = {};
-    self.routes['health'] = function(req, res){ res.send('1'); };
+    self.routes['health'] = function(req, res){ 
+        res.send('Server alive'); 
+    };
   
     //default response with info about app URLs
     self.routes['root'] = function(req, res){ 
@@ -54,35 +56,46 @@ var App = function(){
 
     // Retourne la liste des médicaments
     self.routes['returnAllMedocs'] = function(req, res){
-        self.db.collection('medicaments').find().toArray(function(err, medocs) {
+
+        // On ne veut pas plus de 100 documents remontés...
+        self.db.collection('medicaments').find().limit( 100 ).toArray(function(err, medocs) {
             res.header("Content-Type:","application/json");
-
-            //A TESTER
-            res.charset = 'utf-8';
-
-            res.end(JSON.stringify(medocs));
+            res.end(JSON.stringify(medocs, null, 3));
         });
     };
 
     // Retourne le medoc dont l'id est passé dans l'URL
-    self.routes['returnAMedoc'] = function(req, res){
-        var BSON = mongodb.BSONPure;
-        var medocObjectID = new BSON.ObjectID(req.params.id);
-        self.db.collection('medicaments').find({'_id':medocObjectID}).toArray(function(err, names){
+    self.routes['medocById'] = function(req, res){
+        //var BSON = mongodb.BSONPure;
+        //var medocObjectID = new BSON.ObjectID(req.params.id);
+        var idMedoc = parseInt(req.params.id);
+        self.db.collection('medicaments').find({'id':idMedoc}).toArray(function(err, medoc){
             res.header("Content-Type:","application/json");
-            res.end(JSON.stringify(names));
+            // Retourne le JSON (on force le mode 'pretty')
+            res.end(JSON.stringify(medoc, null, 3));
+        });
+    }
+
+    // Retourne les medocs dont le fabriquant est passé dans l'URL
+    self.routes['medocsByFabriquant'] = function(req, res){
+        var fabriquant = req.params.nom;
+        var pattern = new RegExp('.*' + fabriquant + '.*','i');
+        self.db.collection('medicaments').find({'authorization_holder': pattern}).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json");
+            // Retourne le JSON (on force le mode 'pretty')
+            res.end(JSON.stringify(medocs, null, 3));
         });
     }
 
     // Enregistre un médicament
     self.routes['postAMedoc'] = function(req, res){
-        var medicament = req.body.medicament;
-        self.db.collection('medicaments').insert( medicament, {w:1}, function(err, records){
-        if (err) { 
-            throw err; 
-        }
-        res.end('success');
-        });
+        //var medicament = req.body.medicament;
+        //self.db.collection('medicaments').insert( medicament, {w:1}, function(err, records){
+        //if (err) { 
+        //    throw err; 
+        //}
+        //res.end('success');
+        //});
     };
 
 
@@ -103,7 +116,8 @@ var App = function(){
     self.app.get('/health', self.routes['health']);
     self.app.get('/', self.routes['root']);
     self.app.get('/ws/medocs', self.routes['returnAllMedocs']);
-    self.app.get('/ws/medocs/medoc/:id', self.routes['returnAMedoc']);
+    self.app.get('/ws/medocs/:id', self.routes['medocById']);
+    self.app.get('/ws/medocs/fabriquant/:nom', self.routes['medocsByFabriquant']);
     self.app.post('/ws/medocs/medicament', self.routes['postAMedoc']);
 
     // Logic to open a database connection. We are going to call this outside of app so it is available to all our functions inside.
