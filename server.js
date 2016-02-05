@@ -38,7 +38,9 @@ var App = function(){
      *  Retrieve entry (content) from cache.
      *  @param {string} key  Key identifying content to retrieve from cache.
      */
-    self.cache_get = function(key) { return self.zcache[key]; };
+    self.cache_get = function(key) { 
+        return self.zcache[key]; 
+    };
 
     // Web app logic
     self.routes = {};
@@ -54,6 +56,10 @@ var App = function(){
     self.routes['returnAllMedocs'] = function(req, res){
         self.db.collection('medicaments').find().toArray(function(err, medocs) {
             res.header("Content-Type:","application/json");
+
+            //A TESTER
+            res.charset = 'utf-8';
+
             res.end(JSON.stringify(medocs));
         });
     };
@@ -61,20 +67,22 @@ var App = function(){
     // Retourne le medoc dont l'id est passé dans l'URL
     self.routes['returnAMedoc'] = function(req, res){
         var BSON = mongodb.BSONPure;
-        var parkObjectID = new BSON.ObjectID(req.params.id);
-        self.db.collection('parkpoints').find({'_id':parkObjectID}).toArray(function(err, names){
-            res.header("Content-Type:","application/json"); 
+        var medocObjectID = new BSON.ObjectID(req.params.id);
+        self.db.collection('medicaments').find({'_id':medocObjectID}).toArray(function(err, names){
+            res.header("Content-Type:","application/json");
             res.end(JSON.stringify(names));
         });
     }
 
     // Enregistre un médicament
     self.routes['postAMedoc'] = function(req, res){
-        var seb = req.body.seb;
-        //self.db.collection('medicaments').insert( { "authorization_holder" : authorization_holder }, {w:1}, function(err, records){
-        //if (err) { throw err; }
-        //res.end('success');
-        //});
+        var medicament = req.body.medicament;
+        self.db.collection('medicaments').insert( medicament, {w:1}, function(err, records){
+        if (err) { 
+            throw err; 
+        }
+        res.end('success');
+        });
     };
 
 
