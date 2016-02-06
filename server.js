@@ -59,7 +59,7 @@ var App = function(){
 
         // On ne veut pas plus de 100 documents remontés...
         self.db.collection('medicaments').find().limit( 100 ).toArray(function(err, medocs) {
-            res.header("Content-Type:","application/json");
+            res.header("Content-Type:","application/json; charset=utf-8");
             res.end(JSON.stringify(medocs, null, 3));
         });
     };
@@ -70,7 +70,7 @@ var App = function(){
         //var medocObjectID = new BSON.ObjectID(req.params.id);
         var idMedoc = parseInt(req.params.id);
         self.db.collection('medicaments').find({'id':idMedoc}).toArray(function(err, medoc){
-            res.header("Content-Type:","application/json");
+            res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
             res.end(JSON.stringify(medoc, null, 3));
         });
@@ -81,7 +81,7 @@ var App = function(){
         var fabriquant = req.params.nom;
         var pattern = new RegExp('.*' + fabriquant + '.*','i');
         self.db.collection('medicaments').find({'authorization_holder': pattern}).toArray(function(err, medocs){
-            res.header("Content-Type:","application/json");
+            res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
             res.end(JSON.stringify(medocs, null, 3));
         });
