@@ -86,6 +86,15 @@ var App = function(){
             res.end(JSON.stringify(medocs, null, 3));
         });
     }
+    
+     // Retourne le nombre de medocs par fabriquant
+    self.routes['nbMedocsByFabriquant'] = function(req, res){
+        self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json; charset=utf-8");
+            // Retourne le JSON (on force le mode 'pretty')
+            res.end(JSON.stringify(medocs, null, 3));
+        });
+    }
 
     // Enregistre un médicament
     self.routes['postAMedoc'] = function(req, res){
@@ -116,7 +125,8 @@ var App = function(){
     self.app.get('/health', self.routes['health']);
     self.app.get('/', self.routes['root']);
     self.app.get('/ws/medocs', self.routes['returnAllMedocs']);
-    self.app.get('/ws/medocs/:id', self.routes['medocById']);
+    self.app.get('/ws/medoc/:id', self.routes['medocById']);
+    self.app.get('/ws/medocs/fabriquants', self.routes['nbMedocsByFabriquant']);
     self.app.get('/ws/medocs/fabriquant/:nom', self.routes['medocsByFabriquant']);
     self.app.post('/ws/medocs/medicament', self.routes['postAMedoc']);
 
