@@ -24,23 +24,23 @@ var App = function(){
     /**
       *  Populate the cache.
       */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
+    // self.populateCache = function() {
+    //     if (typeof self.zcache === "undefined") {
+    //         self.zcache = { 'index.html': '' };
+    //     }
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
+    //     //  Local cache for static content.
+    //     self.zcache['index.html'] = fs.readFileSync('./index.html');
+    // };
 
 
     /**
      *  Retrieve entry (content) from cache.
      *  @param {string} key  Key identifying content to retrieve from cache.
      */
-    self.cache_get = function(key) { 
-        return self.zcache[key]; 
-    };
+    // self.cache_get = function(key) { 
+    //     return self.zcache[key]; 
+    // };
 
     // Web app logic
     self.routes = {};
@@ -49,10 +49,10 @@ var App = function(){
     };
   
     //default response with info about app URLs
-    self.routes['root'] = function(req, res){ 
-        res.setHeader('Content-Type', 'text/html');
-        res.send(self.cache_get('index.html') );
-    };
+    // self.routes['root'] = function(req, res){ 
+    //     res.setHeader('Content-Type', 'text/html');
+    //     res.send(self.cache_get('index.html') );
+    // };
 
     // Retourne la liste des médicaments
     self.routes['returnAllMedocs'] = function(req, res){
@@ -91,8 +91,7 @@ var App = function(){
     self.routes['nbMedocsByFabriquant'] = function(req, res){
         self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
-            // Retourne le JSON (on force le mode 'pretty')
-            res.end(JSON.stringify(medocs, null, 3));
+            res.end(JSON.stringify(medocs));
         });
     }
 
@@ -118,12 +117,14 @@ var App = function(){
     self.app.use(bodyParser.urlencoded());
     // parse application/json
     self.app.use(bodyParser.json());
+
     // override with POST having ?_method=DELETE
     self.app.use(methodOverride('_method'))
 
+    self.app.use(express.static('public'));
     //define all the url mappings
     self.app.get('/health', self.routes['health']);
-    self.app.get('/', self.routes['root']);
+   // self.app.get('/', self.routes['root']);
     self.app.get('/ws/medocs', self.routes['returnAllMedocs']);
     self.app.get('/ws/medoc/:id', self.routes['medocById']);
     self.app.get('/ws/medocs/fabriquants', self.routes['nbMedocsByFabriquant']);
@@ -171,7 +172,7 @@ var App = function(){
 
 //make a new express app
 var app = new App();
-app.populateCache();
+//app.populateCache();
 
 //call the connectDb function and pass in the start server command
 app.connectDb(app.startServer);
