@@ -33,10 +33,16 @@ var FabriquantsBox = React.createClass({
   },
   render: function() {
     return (
-      <div className="commentBox">
-        <h1>Fabriquants</h1>
-        <FabriquantList data={this.state.data} />
+      <div className="row">
+        <div className="col s12 m5">
+          <div className="card-panel blue">
+            <span className="white-text">Cette page liste l''ensemble des fournisseurs de médicaments listés sur ce site.</span></br>
+            <span className="white-text">Le nombre de médicaments répertoriés pour chacun d''entre eux est aussi affiché.</span></br> 
+            <span className="white-text">En sélectionnant un fabriquant, vous verrez le détail des médicaments qu''il propose.</span>
+          </div>
+        </div>
       </div>
+      <FabriquantList data={this.state.data} />
     );
   }
 });

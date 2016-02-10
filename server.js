@@ -21,39 +21,12 @@ var App = function(){
         console.warn('No OPENSHIFT_NODEJS_IP environment variable');
     };
 
-    /**
-      *  Populate the cache.
-      */
-    // self.populateCache = function() {
-    //     if (typeof self.zcache === "undefined") {
-    //         self.zcache = { 'index.html': '' };
-    //     }
-
-    //     //  Local cache for static content.
-    //     self.zcache['index.html'] = fs.readFileSync('./index.html');
-    // };
-
-
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    // self.cache_get = function(key) { 
-    //     return self.zcache[key]; 
-    // };
-
     // Web app logic
     self.routes = {};
     self.routes['health'] = function(req, res){ 
         res.send('Server alive'); 
     };
   
-    //default response with info about app URLs
-    // self.routes['root'] = function(req, res){ 
-    //     res.setHeader('Content-Type', 'text/html');
-    //     res.send(self.cache_get('index.html') );
-    // };
-
     // Retourne la liste des médicaments
     self.routes['returnAllMedocs'] = function(req, res){
 
@@ -86,13 +59,20 @@ var App = function(){
             res.end(JSON.stringify(medocs, null, 3));
         });
     }
+
+    // Variable dans laquelle on va garder les fabriquants en cache pour ne pas faire N fois la même requête Mongo
+    var fabCache;
     
      // Retourne le nombre de medocs par fabriquant
     self.routes['nbMedocsByFabriquant'] = function(req, res){
-        self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
-            res.header("Content-Type:","application/json; charset=utf-8");
-            res.end(JSON.stringify(medocs));
-        });
+
+        if (fabCache === undefined) {
+            self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
+                fabCache = JSON.stringify(medocs);
+            });
+        }
+        res.header("Content-Type:","application/json; charset=utf-8");
+        res.end(fabCache);
     }
 
     // Enregistre un médicament
@@ -117,6 +97,9 @@ var App = function(){
     self.app.use(bodyParser.urlencoded());
     // parse application/json
     self.app.use(bodyParser.json());
+
+    // On compresse les échanges
+    self.app.use(express.compress());
 
     // override with POST having ?_method=DELETE
     self.app.use(methodOverride('_method'))
@@ -172,7 +155,6 @@ var App = function(){
 
 //make a new express app
 var app = new App();
-//app.populateCache();
 
 //call the connectDb function and pass in the start server command
 app.connectDb(app.startServer);
