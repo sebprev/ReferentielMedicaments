@@ -59,20 +59,13 @@ var App = function(){
             res.end(JSON.stringify(medocs, null, 3));
         });
     }
-
-    // Variable dans laquelle on va garder les fabriquants en cache pour ne pas faire N fois la même requête Mongo
-    var fabCache;
     
      // Retourne le nombre de medocs par fabriquant
     self.routes['nbMedocsByFabriquant'] = function(req, res){
-
-        if (fabCache === undefined) {
-            self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
-                fabCache = JSON.stringify(medocs);
-            });
-        }
-        res.header("Content-Type:","application/json; charset=utf-8");
-        res.end(fabCache);
+        self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json; charset=utf-8");
+            res.end(JSON.stringify(medocs));
+        });
     }
 
     // Enregistre un médicament

@@ -2,9 +2,9 @@ var Fabriquant = React.createClass({
   render: function() {
     return (
       <a href="#!" className="collection-item">
-        {this.props.nom}
+        {this.props.data._id}
         <span className="badge">
-          {this.props.nb}
+          {this.props.data.count}
         </span>
       </a>
     );
@@ -31,18 +31,21 @@ var FabriquantsBox = React.createClass({
   componentDidMount: function() {
     this.loadFabriquantsFromServer();
   },
+
   render: function() {
     return (
+      <div>
       <div className="row">
-        <div className="col s12 m5">
-          <div className="card-panel blue">
-            <span className="white-text">Cette page liste l''ensemble des fournisseurs de médicaments listés sur ce site.</span></br>
-            <span className="white-text">Le nombre de médicaments répertoriés pour chacun d''entre eux est aussi affiché.</span></br> 
-            <span className="white-text">En sélectionnant un fabriquant, vous verrez le détail des médicaments qu''il propose.</span>
+        <div className="col s6 offset-s3">
+          <div className="card-panel grey">
+            <span className="white-text">Cette page liste l'ensemble des fournisseurs de médicaments listés sur ce site. </span><br />
+            <span className="white-text">Le nombre de médicaments répertoriés pour chacun d'entre eux est aussi affiché. </span><br />
+            <span className="white-text">En sélectionnant un fabriquant, vous verrez le détail des médicaments qu'il propose.</span>
           </div>
         </div>
       </div>
       <FabriquantList data={this.state.data} />
+      </div>
     );
   }
 });
@@ -51,13 +54,16 @@ var FabriquantList = React.createClass({
   render: function() {
     var fabNodes = this.props.data.map(function(fabriquant) {
       return (
-        <Fabriquant nom={fabriquant._id} nb={fabriquant.count}>
-        </Fabriquant>
+        <Fabriquant key={fabriquant._id} data={fabriquant} />
       );
     });
     return (
-      <div className="collection">
-        {fabNodes}
+      <div className="row">
+        <div className="col s8 offset-s2">
+          <div className="collection">
+            {fabNodes}
+          </div>
+        </div>
       </div>
     );
   }

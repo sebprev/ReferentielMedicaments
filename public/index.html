@@ -14,9 +14,9 @@
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="js/react.js"></script>
     <script src="js/react-dom.js"></script>
-    <!--script src="js/browser.js"></script -->
+    <script src="js/browser.js"></script>
     <script src="js/materialize.min.js"></script>
-    <!--script src="js/marked.min.js"></script-->
+    <script src="js/marked.min.js"></script>
   </head>
   <body>
 
@@ -42,7 +42,7 @@
         <p>Aide à écrire ici.</p>
       </div>
       <div class="modal-footer">
-        <a href="" class="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
+        <a href="javascript:closeModal('#aide');" class="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
       </div>
     </div>
 
@@ -81,6 +81,10 @@
       
       var openModal = function(idModal) {
         $(idModal).openModal();
+      }
+
+      var closeModal = function(idModal) {
+        $(idModal).closeModal();
       }
 
     </script>
