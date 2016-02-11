@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>M&eacute;dicaments</title>
-    <meta name="description" content="Site Web de S&eacute;bastien PREVOST" />
+    <meta name="description" content="Site Web permettant de trouver les informations sur les m&eacute;dicaments et leur fabriquant" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="Medicaments, Fabriquant, Laboratoire" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
@@ -20,16 +20,16 @@
   </head>
   <body>
 
-    <!-- Navbar -->
+    <!-- Barre de navigation -->
     <div class="navbar-fixed">
       <nav>
         <div class="nav-wrapper">
-          <a class="brand-logo center">Base de données médicaments</a>
-          <ul class="right hide-on-med-and-down">
-            <li><a href=""><i class="material-icons" title="Rechercher un médicament">search</i></a></li>
-            <li><a href=""><i class="material-icons" title="Page accueil">view_list</i></a></li>
-            <li><a href="javascript:openModal('#aide');"><i class="material-icons" title="Aide">info</i></a></li>
-            <li><a href=""><i class="material-icons" title="Actions">more_vert</i></a></li>
+          <a class="brand-logo center hide-on-med-and-down">Base de données médicaments</a>
+          <ul class="right">
+            <li><a href="javascript:openModal('#recherche');" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Rechercher un médicament"><i class="material-icons">search</i></a></li>
+            <li><a href="" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Page accueil"><i class="material-icons">view_list</i></a></li>
+            <li><a href="javascript:openModal('#aide');" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Aide"><i class="material-icons">info</i></a></li>
+            <li><a href="" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i class="material-icons">more_vert</i></a></li>
           </ul>
         </div>
       </nav>
@@ -38,11 +38,35 @@
     <!-- Fenêtre modale décrivant l'aide -->
     <div id="aide" class="modal">
       <div class="modal-content">
-        <h4>Aide</h4>
+        <h4>Guide utilisation de ce site</h4>
         <p>Aide à écrire ici.</p>
       </div>
       <div class="modal-footer">
         <a href="javascript:closeModal('#aide');" class="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
+      </div>
+    </div>
+
+    <!-- Fenêtre de recherche d'un médicament -->
+    <div id="recherche" class="modal">
+      <div class="modal-content">
+        <h4>Recherche de médicaments</h4>
+        <p>
+          <div class="row">
+            <form class="col s12">
+              <div class="row">
+                <div class="input-field col s6">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="inputMedicament" type="text" class="validate" onkeypress="onSaisiMedocKeyPress(event);">
+                  <label for="icon_prefix">Saisir ici le médicament</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:rechercheMedicament('#recherche');" class="modal-action modal-close waves-effect waves-green btn-flat">Rechercher</a>
+        <a href="javascript:closeModal('#recherche');" class="modal-action modal-close waves-effect waves-green btn-flat">Annuler</a>
       </div>
     </div>
 
@@ -85,6 +109,27 @@
 
       var closeModal = function(idModal) {
         $(idModal).closeModal();
+      }
+
+      var onSaisiMedocKeyPress = function(event) {
+        // Si on tape sur entrée lors de la saisie d'un médoc, on effectue la recherche directement.
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          rechercheMedicament('#recherche');
+        }
+      }
+
+      var rechercheMedicament = function(idModal) {
+        var medicament = document.getElementById('inputMedicament').value;
+        if (medicament) {
+          showToast('Recherche en cours :&nbsp;<div style="color:red">' + medicament + '</div>');
+          document.getElementById('inputMedicament').value = null;
+        }
+        closeModal(idModal);
+      }
+
+      var showToast = function(text) {
+        Materialize.toast(text, 3000, 'rounded');
       }
 
     </script>
