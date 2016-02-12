@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="utf-8">
     <title>M&eacute;dicaments</title>
@@ -20,118 +20,10 @@
   </head>
   <body>
 
-    <!-- Barre de navigation -->
-    <div class="navbar-fixed">
-      <nav>
-        <div class="nav-wrapper">
-          <a class="brand-logo center hide-on-med-and-down">Base de données médicaments</a>
-          <ul class="right">
-            <li><a href="javascript:openModal('#recherche');" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Rechercher un médicament"><i class="material-icons">search</i></a></li>
-            <li><a href="" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Page accueil"><i class="material-icons">view_list</i></a></li>
-            <li><a href="javascript:openModal('#aide');" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Aide"><i class="material-icons">info</i></a></li>
-            <li><a href="" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i class="material-icons">more_vert</i></a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-
-    <!-- Fenêtre modale décrivant l'aide -->
-    <div id="aide" class="modal">
-      <div class="modal-content">
-        <h4>Guide utilisation de ce site</h4>
-        <p>Aide à écrire ici.</p>
-      </div>
-      <div class="modal-footer">
-        <a href="javascript:closeModal('#aide');" class="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
-      </div>
-    </div>
-
-    <!-- Fenêtre de recherche d'un médicament -->
-    <div id="recherche" class="modal">
-      <div class="modal-content">
-        <h4>Recherche de médicaments</h4>
-        <p>
-          <div class="row">
-            <form class="col s12">
-              <div class="row">
-                <div class="input-field col s6">
-                  <i class="material-icons prefix">account_circle</i>
-                  <input id="inputMedicament" type="text" class="validate" onkeypress="onSaisiMedocKeyPress(event);">
-                  <label for="icon_prefix">Saisir ici le médicament</label>
-                </div>
-              </div>
-            </form>
-          </div>
-        </p>
-      </div>
-      <div class="modal-footer">
-        <a href="javascript:rechercheMedicament('#recherche');" class="modal-action modal-close waves-effect waves-green btn-flat">Rechercher</a>
-        <a href="javascript:closeModal('#recherche');" class="modal-action modal-close waves-effect waves-green btn-flat">Annuler</a>
-      </div>
-    </div>
-
     <!-- Contenu injecté par ReactJS -->
-    <div id="content"></div>
-
-    <!-- Footer -->
-    <footer class="page-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col l6 s12">
-            <h5 class="white-text">Informations</h5>
-            <p class="grey-text text-lighten-4">Ce site est un site personnel. Les données ne sont en rien garanties.</br> Elles proviennent du site Open Data du Gouvernement.</p>
-          </div>
-          <div class="col l4 offset-l2 s12">
-            <h5 class="white-text">Liens externes</h5>
-            <ul>
-              <li><a class="grey-text text-lighten-3" href="https://www.data.gouv.fr/fr/datasets/base-de-donnees-publique-des-medicaments-base-officielle/">Base de données Data.gouv.fr</a></li>
-              <li><a class="grey-text text-lighten-3" href="http://sebastien.prevost31.free.fr">@sebprev</a></li>
-              <li><a class="grey-text text-lighten-3" href="https://developers.openshift.com/en/node-js-overview.html">NodeJS sur OpenShift</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-copyright">
-        <div class="container">
-          © 2016 Web Muret
-          <a class="grey-text text-lighten-4 right" href="mailto:webmuret@gmail.com">Nous contacter</a>
-        </div>
-      </div>
-    </footer>
+    <div id="content" />
 
     <!-- Chargement JS du comportement React-->
     <script type="text/babel" src="client/app.js"></script>
-    <script type="text/javascript">
-      
-      var openModal = function(idModal) {
-        $(idModal).openModal();
-      }
-
-      var closeModal = function(idModal) {
-        $(idModal).closeModal();
-      }
-
-      var onSaisiMedocKeyPress = function(event) {
-        // Si on tape sur entrée lors de la saisie d'un médoc, on effectue la recherche directement.
-        if (event.keyCode === 13) {
-          event.preventDefault();
-          rechercheMedicament('#recherche');
-        }
-      }
-
-      var rechercheMedicament = function(idModal) {
-        var medicament = document.getElementById('inputMedicament').value;
-        if (medicament) {
-          showToast('Recherche en cours :&nbsp;<div style="color:red">' + medicament + '</div>');
-          document.getElementById('inputMedicament').value = null;
-        }
-        closeModal(idModal);
-      }
-
-      var showToast = function(text) {
-        Materialize.toast(text, 3000, 'rounded');
-      }
-
-    </script>
   </body>
 </html>
