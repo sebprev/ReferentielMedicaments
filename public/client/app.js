@@ -1,16 +1,38 @@
-var Fabriquant = React.createClass({
+ /*
+  * Barre de navigation.
+  */
+var NavBar = React.createClass({
+  ouvrirAide: function(event) {
+    $('#aide').openModal();
+  },
+  ouvrirRecherche: function(event) {
+    $('#recherche').openModal();
+  },
+  retourAccueil: function(event) {
+    this.props.retourAccueil();
+  },
   render: function() {
     return (
-      <a href="#!" className="collection-item">
-        {this.props.data._id}
-        <span className="badge">
-          {this.props.data.count}
-        </span>
-      </a>
-    );
+      <div className="navbar-fixed">
+      <nav>
+        <div className="nav-wrapper">
+          <a className="brand-logo center hide-on-med-and-down">Base de données médicaments</a>
+          <ul className="right">
+            <li><a onClick={this.ouvrirRecherche} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Rechercher un médicament"><i className="material-icons">search</i></a></li>
+            <li><a onClick={this.retourAccueil} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Page accueil"><i className="material-icons">view_list</i></a></li>
+            <li><a onClick={this.ouvrirAide} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Aide"><i className="material-icons">info</i></a></li>
+            <li><a className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i className="material-icons">more_vert</i></a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    )
   }
 });
 
+ /*
+  * Fenêtre modale d'aide.
+  */
 var AideModal = React.createClass({
   closeModal: function(event) {
     $('#aide').closeModal();
@@ -23,39 +45,16 @@ var AideModal = React.createClass({
           <p>Aide à écrire ici.</p>
         </div>
         <div className="modal-footer">
-          <a href="#" onClick={this.closeModal} className="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
+          <a onClick={this.closeModal} className="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
         </div>
       </div>
     )
   }
 });
 
-var NavBar = React.createClass({
-  ouvrirAide: function(event) {
-    $('#aide').openModal();
-  },
-  ouvrirRecherche: function(event) {
-    $('#recherche').openModal();
-  },
-  render: function() {
-    return (
-      <div className="navbar-fixed">
-      <nav>
-        <div className="nav-wrapper">
-          <a className="brand-logo center hide-on-med-and-down">Base de données médicaments</a>
-          <ul className="right">
-            <li><a href="#recherche" onClick={this.ouvrirRecherche} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Rechercher un médicament"><i className="material-icons">search</i></a></li>
-            <li><a href="#accueil" className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Page accueil"><i className="material-icons">view_list</i></a></li>
-            <li><a href="#aide" onClick={this.ouvrirAide} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Aide"><i className="material-icons">info</i></a></li>
-            <li><a href="#actions" className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i className="material-icons">more_vert</i></a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-    )
-  }
-});
-
+ /*
+  * Le footer de page.
+  */
 var Footer = React.createClass({
   render: function() {
     return (
@@ -89,35 +88,12 @@ var Footer = React.createClass({
   }
 });
 
+ /*
+  * La fenêtre modale de recherche de médicaments.
+  */
 var RechercheModal = React.createClass({
   closeModal: function(event) {
     $('#recherche').closeModal();
-  },
-  render: function() {
-    return (
-      <div>
-        <div id="recherche" className="modal">
-          <div className="modal-content">
-            <h4>Recherche de médicaments</h4>
-              <div className="row">
-                <form className="col s12">
-                  <div className="row">
-                    <div className="input-field col s6">
-                      <i className="material-icons prefix">account_circle</i>
-                      <input id="inputMedicament" type="text" className="validate" onKeyPress={this.entrerClavier} />
-                      <label htmlFor="icon_prefix">Saisir ici le médicament</label>
-                    </div>
-                  </div>
-                </form>
-              </div>
-          </div>
-          <div className="modal-footer">
-            <a href="#" onClick={this.afficherPage} className="modal-action modal-close waves-effect waves-green btn-flat">Rechercher</a>
-            <a href="#" onClick={this.closeModal} className="modal-action modal-close waves-effect waves-green btn-flat">Annuler</a>
-          </div>
-        </div>
-      </div>
-    )
   },
   entrerClavier: function(event) {
       // Si on tape sur entrée lors de la saisie d'un médoc, on effectue la recherche directement.
@@ -140,20 +116,92 @@ var RechercheModal = React.createClass({
 
       this.props.changerPage(params);
     }
+  },
+  render: function() {
+    return (
+      <div>
+        <div id="recherche" className="modal">
+          <div className="modal-content">
+            <h4>Recherche de médicaments</h4>
+              <div className="row">
+                <form className="col s12">
+                  <div className="row">
+                    <div className="input-field col s6">
+                      <i className="material-icons prefix">account_circle</i>
+                      <input id="inputMedicament" type="text" className="validate" onKeyPress={this.entrerClavier} />
+                      <label htmlFor="icon_prefix">Saisir ici le médicament</label>
+                    </div>
+                  </div>
+                </form>
+              </div>
+          </div>
+          <div className="modal-footer">
+            <a onClick={this.afficherPage} className="modal-action modal-close waves-effect waves-green btn-flat">Rechercher</a>
+            <a onClick={this.closeModal} className="modal-action modal-close waves-effect waves-green btn-flat">Annuler</a>
+          </div>
+        </div>
+      </div>
+    )
   }
 });
 
+ /*
+  * L'affichage particulier d'un fabriquant.
+  */
+var Fabriquant = React.createClass({
+   afficherPage: function(event) {
+      event.preventDefault();
+
+      var params = [];
+      params['pageSuivante'] = 'medocsPasFabriquants';
+      params['fabriquant'] = this.props.data._id;
+
+      this.props.changerPage(params);
+  },
+  render: function() {
+    return (
+      <a className="collection-item" onClick={this.afficherPage} >
+        {this.props.data._id}
+        <span className="badge">{this.props.data.count}</span>
+      </a>
+    );
+  }
+});
+
+var FabriquantList = React.createClass({
+  render: function() {
+    var changerPage = this.props.changerPage;
+    var fabNodes = this.props.data.map(function(fabriquant) {
+      return (
+        <Fabriquant key={fabriquant._id} data={fabriquant} changerPage={changerPage} />
+      );
+    });
+    return (
+      <div className="row">
+        <div className="col s8 offset-s2">
+          <div className="collection">
+            {fabNodes}
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+ /*
+  * La box dans laquelle on va afficher les fabriquants.
+  */
 var FabriquantsBox = React.createClass({
   loadFabriquantsFromServer: function() {
     $.ajax({
-      url: this.props.url,
+      url: "/ws/medocs/fabriquants",
       dataType: 'json',
       cache: true,
       success: function(data) {
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
+        console.error("/ws/medocs/fabriquants", status, err.toString());
       }.bind(this)
     });
   },
@@ -179,44 +227,92 @@ var FabriquantsBox = React.createClass({
           </div>
         </div>
       </div>
-      <FabriquantList data={this.state.data} />
+      <FabriquantList data={this.state.data} changerPage={this.props.changerPage} />
       </div>
     );
   }
 });
 
-var FabriquantList = React.createClass({
-  render: function() {
-    var fabNodes = this.props.data.map(function(fabriquant) {
-      return (
-        <Fabriquant key={fabriquant._id} data={fabriquant} />
-      );
+ /*
+  * Les médicaments par fabriquant.
+  */
+var MedocsFabriquant = React.createClass({
+  loadMedocsFromServer: function() {
+    $.ajax({
+      url: "/ws/medocs/fabriquant/" + this.props.fabriquant,
+      dataType: 'json',
+      cache: true,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error("/ws/medocs/fabriquant/" + this.props.fabriquant, status, err.toString());
+      }.bind(this)
     });
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentDidMount: function() {
+    this.loadMedocsFromServer();
+  },
+  render: function() {
     return (
-      <div className="row">
-        <div className="col s8 offset-s2">
-          <div className="collection">
-            {fabNodes}
-          </div>
-        </div>
+      <div>
+        TODO : afficher les résultats de MedocsFabriquant: {this.props.fabriquant}
       </div>
     );
   }
 });
 
+ /*
+  * Les médicaments dont le nom contient celui donné.
+  */
+var MedicamentsRecherche = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentDidMount: function() {
+    //this.loadMedocsFromServer();
+  },
+  render: function() {
+    return (
+      <div>
+        TODO : afficher les résultats de MedicamentsRecherche: {this.props.nom}
+      </div>
+    );
+  }
+});
+
+ /*
+  * Le panneau principal dans lequel on va gérer tout le contenu.
+  */
 var ContentBox = React.createClass({
+  retourAccueil: function() {
+    if (this.state.page !== "fabriquants") {
+        this.setState({
+        page        : "fabriquants"
+      })
+    }
+    else {
+      Materialize.toast('Vous êtes déjà sur la page', 3000, 'rounded');
+    }
+  },
   changerPage: function(params) {
     this.setState({
-      page : params['pageSuivante'],
-      medoc : params['medic']
+      page        : params['pageSuivante'],
+      medoc       : params['medic'],
+      fabriquant  : params['fabriquant']
     })
   },
   afficherPage: function() {
     switch (this.state.page) {
       case "fabriquants":
-        return <FabriquantsBox url="/ws/medocs/fabriquants" changerPage={this.changerPage} />
+        return <FabriquantsBox changerPage={this.changerPage} />
       case "medicaments":
-        return <div id='seb'>{this.state.medoc}</div>
+        return <MedicamentsRecherche nom={this.state.medoc} />
+      case "medocsPasFabriquants":
+        return <MedocsFabriquant fabriquant={this.state.fabriquant} />
     }
   },
   getInitialState: function() {
@@ -227,7 +323,7 @@ var ContentBox = React.createClass({
   render: function() {
     return (
       <div>
-        <NavBar />
+        <NavBar retourAccueil={this.retourAccueil} />
         <AideModal />
         <RechercheModal changerPage={this.changerPage} />
         {this.afficherPage()}
