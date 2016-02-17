@@ -320,6 +320,13 @@ var ContentBox = React.createClass({
       page : "fabriquants"
     }
   },
+  componentDidMount: function() {
+    // Correction bug IHM (mauvaise initialisation des Tooltips)
+    setTimeout(function() {
+       $('.tooltipped').tooltip({delay: 50});
+    }, 1000);
+   
+  },
   render: function() {
     return (
       <div>
