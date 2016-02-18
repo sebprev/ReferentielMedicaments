@@ -168,6 +168,22 @@ var Fabriquant = React.createClass({
   }
 });
 
+ /*
+  * L'affichage particulier d'un médicament dans la table.
+  */
+var Medicament = React.createClass({
+  render: function() {
+    return (
+       <tr>
+        <td>{this.props.data.id}</td>
+        <td>{this.props.data.authorization_holder}</td>
+        <td>{this.props.data.title}</td>
+        <td>{this.props.data.cis_code}</td>
+      </tr>
+    );
+  }
+});
+
 var FabriquantList = React.createClass({
   render: function() {
     var changerPage = this.props.changerPage;
@@ -184,6 +200,32 @@ var FabriquantList = React.createClass({
           </div>
         </div>
       </div>
+    );
+  }
+});
+
+var MedocList = React.createClass({
+  render: function() {
+    var changerPage = this.props.changerPage;
+    var medocNodes = this.props.data.map(function(medoc) {
+      return (
+        <Medicament key={medoc._id} data={medoc} changerPage={changerPage} />
+      );
+    });
+    return (
+      <table className="bordered centered highlight responsive-table">
+        <thead>
+          <tr>
+              <th data-field="id">Identifiant</th>
+              <th data-field="fabriquant">Fabriquant</th>
+              <th data-field="title">Nom</th>
+              <th data-field="ciscode">Code CIS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {medocNodes}
+        </tbody>
+      </table>
     );
   }
 });
@@ -239,14 +281,14 @@ var FabriquantsBox = React.createClass({
 var MedocsFabriquant = React.createClass({
   loadMedocsFromServer: function() {
     $.ajax({
-      url: "/ws/medocs/fabriquant/" + this.props.fabriquant,
+      url: "/ws/medocs/fabriquantexact/" + this.props.fabriquant,
       dataType: 'json',
       cache: true,
       success: function(data) {
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error("/ws/medocs/fabriquant/" + this.props.fabriquant, status, err.toString());
+        console.error("/ws/medocs/fabriquantexact/" + this.props.fabriquant, status, err.toString());
       }.bind(this)
     });
   },
@@ -257,11 +299,21 @@ var MedocsFabriquant = React.createClass({
     this.loadMedocsFromServer();
   },
   render: function() {
+    var span1 = "Cette page liste l'ensemble des médicaments du fournisseur " + this.props.fabriquant + ".";
+    var span2 = "En sélectionnant un médicament, vous en verrez le détail.";
     return (
-      <div>
-        TODO : afficher les résultats de MedocsFabriquant: {this.props.fabriquant}
-      </div>
-    );
+        <div>
+          <div className="row">
+            <div className="col s6 offset-s3">
+              <div className="card-panel grey">
+                <span className="white-text">{span1}</span><br />
+                <span className="white-text">{span2}</span>
+              </div>
+            </div>
+          </div>
+          <MedocList data={this.state.data} changerPage={this.props.changerPage} />
+        </div>
+      );
   }
 });
 
@@ -269,18 +321,46 @@ var MedocsFabriquant = React.createClass({
   * Les médicaments dont le nom contient celui donné.
   */
 var MedicamentsRecherche = React.createClass({
+  loadMedocsFromServer: function(nom) {
+    $.ajax({
+      url: "/ws/medocs/medicament/" + nom,
+      dataType: 'json',
+      cache: true,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error("/ws/medocs/medicament/" + nom, status, err.toString());
+      }.bind(this)
+    });
+  },
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.nom !== this.props.nom) {
+      return this.loadMedocsFromServer(nextProps.nom);
+    }
+  },
   getInitialState: function() {
     return {data: []};
   },
   componentDidMount: function() {
-    //this.loadMedocsFromServer();
+    this.loadMedocsFromServer(this.props.nom);
   },
   render: function() {
+    var span1 = "Cette page liste l'ensemble des médicaments dont le nom contient la saisie lors de la recherche.";
+    var span2 = "En sélectionnant un médicament, vous en verrez le détail.";
     return (
-      <div>
-        TODO : afficher les résultats de MedicamentsRecherche: {this.props.nom}
-      </div>
-    );
+        <div>
+          <div className="row">
+            <div className="col s6 offset-s3">
+              <div className="card-panel grey">
+                <span className="white-text">{span1}</span><br />
+                <span className="white-text">{span2}</span>
+              </div>
+            </div>
+          </div>
+          <MedocList data={this.state.data} changerPage={this.props.changerPage} />
+        </div>
+      );
   }
 });
 

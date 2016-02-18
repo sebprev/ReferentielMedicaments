@@ -49,11 +49,31 @@ var App = function(){
         });
     }
 
+    // Retourne les medocs dont le nom est contenu dans le paramètre passé dans l'URL
+    self.routes['medocsByNom'] = function(req, res){
+        var medoc = req.params.nom;
+        var pattern = new RegExp('.*' + medoc + '.*','i');
+        self.db.collection('medicaments').find({'title': pattern}).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json; charset=utf-8");
+            // Retourne le JSON (on force le mode 'pretty')
+            res.end(JSON.stringify(medocs, null, 3));
+        });
+    }
+
     // Retourne les medocs dont le fabriquant est passé dans l'URL
     self.routes['medocsByFabriquant'] = function(req, res){
         var fabriquant = req.params.nom;
         var pattern = new RegExp('.*' + fabriquant + '.*','i');
         self.db.collection('medicaments').find({'authorization_holder': pattern}).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json; charset=utf-8");
+            // Retourne le JSON (on force le mode 'pretty')
+            res.end(JSON.stringify(medocs, null, 3));
+        });
+    }
+
+    // Retourne les medocs dont le fabriquant est exactement celui passé dans l'URL
+    self.routes['medocsByFabriquantExact'] = function(req, res){
+        self.db.collection('medicaments').find({'authorization_holder': req.params.nom}).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
             res.end(JSON.stringify(medocs, null, 3));
@@ -104,7 +124,9 @@ var App = function(){
     self.app.get('/ws/medocs', self.routes['returnAllMedocs']);
     self.app.get('/ws/medoc/:id', self.routes['medocById']);
     self.app.get('/ws/medocs/fabriquants', self.routes['nbMedocsByFabriquant']);
+    self.app.get('/ws/medocs/medicament/:nom', self.routes['medocsByNom']);
     self.app.get('/ws/medocs/fabriquant/:nom', self.routes['medocsByFabriquant']);
+    self.app.get('/ws/medocs/fabriquantexact/:nom', self.routes['medocsByFabriquantExact']);
     self.app.post('/ws/medocs/medicament', self.routes['postAMedoc']);
 
     // Logic to open a database connection. We are going to call this outside of app so it is available to all our functions inside.
