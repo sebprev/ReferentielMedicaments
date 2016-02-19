@@ -88,6 +88,91 @@ var Footer = React.createClass({
   }
 });
 
+/*
+ * Fenêtre modale contentant le détail d'un médicament
+ */
+var DetailMedicament = React.createClass({
+  loadMedicamentFromServer: function(id) {
+    $.ajax({
+      url: "/ws/medoc/" + id,
+      dataType: 'json',
+      cache: true,
+      success: function(data) {
+        this.setState({data: data[0]});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error("/ws/medoc/" + id, status, err.toString());
+      }.bind(this)
+    });
+  },
+  getInitialState: function() {
+    return {data: {}};
+  },
+  closeModal: function(event) {
+    $('#medicamentdetail').closeModal();
+  },
+  handleShowDetail: function(event) {
+      $('#medicamentdetail').openModal();
+      this.loadMedicamentFromServer(event.detail);
+      event.preventDefault();
+  },
+  componentDidMount: function() {
+    $('.collapsible').collapsible({
+      accordion : false 
+    });
+    window.addEventListener("showDetail", this.handleShowDetail);
+  },
+  render: function() {
+    var detail = <p>Non renseigné</p>;
+    if (this.state.data.presentations) {
+       detail = this.state.data.presentations.map(function(element) {
+          var endDate = element.marketing_stop_date ? element.marketing_stop_date : ' ?';
+          return <p key={element.title} >
+                <b>Titre</b>: {element.title} <br />
+                <b>Date de mise en vente (Année / mois / jour)</b>: {element.marketing_start_date} <br />
+                <b>Date de fin de vente (Année / mois / jour)</b>: {endDate} <br />
+                <b>Prix</b>: {element.price}€<br />
+                <b>Taux de remboursement</b>: {element.refund_rate}%<br />
+            </p>;
+        });
+    }
+    return (
+      <div>
+        <div id="medicamentdetail" className="modal">
+          <div className="modal-content">
+            <h4>Détail du médicament</h4>
+              <ul className="collapsible" data-collapsible="accordion">
+                <li>
+                  <div className="collapsible-header active"><i className="material-icons">info_outline</i>Informations générales</div>
+                  <div className="collapsible-body"><p><b>Identifiant</b>: {this.state.data.id} <br />
+                    <b>Fabriquant</b>: {this.state.data.authorization_holder} <br />
+                    <b>NOM</b>: {this.state.data.title} <br />
+                    <b>Code CIS</b>: {this.state.data.cis_code}</p>
+                  </div>
+                </li>
+                <li>
+                  <div className='collapsible-header'><i className='material-icons'>playlist_add</i>Détail</div>
+                  <div className='collapsible-body'>{detail}</div>
+                </li>
+                <li>
+                  <div className="collapsible-header"><i className="material-icons">group_work</i>Composition</div>
+                  <div className="collapsible-body"><p>En construction...</p></div>
+                </li>
+                <li>
+                  <div className="collapsible-header"><i className="material-icons">whatshot</i>IAB</div>
+                  <div className="collapsible-body"><p>En construction...</p></div>
+                </li>
+              </ul>
+          </div>
+          <div className="modal-footer">
+            <a className="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+          </div>
+        </div>
+      </div>
+    )
+  }
+});
+
  /*
   * La fenêtre modale de recherche de médicaments.
   */
@@ -172,9 +257,12 @@ var Fabriquant = React.createClass({
   * L'affichage particulier d'un médicament dans la table.
   */
 var Medicament = React.createClass({
+  afficherDetail: function(event) {
+    window.dispatchEvent(new CustomEvent('showDetail', { 'detail': this.props.data.id }));
+  },
   render: function() {
     return (
-       <tr>
+       <tr onClick={this.afficherDetail} >
         <td>{this.props.data.id}</td>
         <td>{this.props.data.authorization_holder}</td>
         <td>{this.props.data.title}</td>
@@ -213,19 +301,23 @@ var MedocList = React.createClass({
       );
     });
     return (
-      <table className="bordered centered highlight responsive-table">
-        <thead>
-          <tr>
-              <th data-field="id">Identifiant</th>
-              <th data-field="fabriquant">Fabriquant</th>
-              <th data-field="title">Nom</th>
-              <th data-field="ciscode">Code CIS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {medocNodes}
-        </tbody>
-      </table>
+      <div className="row">
+        <div className="col s10 offset-s1">
+          <table id="medoclist" className="bordered centered highlight responsive-table z-depth-3">
+            <thead>
+              <tr>
+                  <th data-field="id">Identifiant</th>
+                  <th data-field="fabriquant">Fabriquant</th>
+                  <th data-field="title">Nom</th>
+                  <th data-field="ciscode">Code CIS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {medocNodes}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 });
@@ -412,6 +504,7 @@ var ContentBox = React.createClass({
       <div>
         <NavBar retourAccueil={this.retourAccueil} />
         <AideModal />
+        <DetailMedicament />
         <RechercheModal changerPage={this.changerPage} />
         {this.afficherPage()}
         <Footer />

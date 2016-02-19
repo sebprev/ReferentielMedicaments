@@ -2,6 +2,10 @@ body {
 	overflow-y:scroll !important;
 }
 
-a.collection-item:hover {
+a.collection-item:hover, table#medoclist>tbody>tr:hover {
 	cursor: pointer;
+}
+
+ul.collapsible {
+	font-size: 11px;
 }
