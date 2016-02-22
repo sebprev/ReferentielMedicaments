@@ -30,19 +30,20 @@ var NavBar = React.createClass({
   }
 });
 
- /*
-  * Fenêtre modale d'aide.
-  */
-var AideModal = React.createClass({
+var InfoModal = React.createClass({
   closeModal: function(event) {
-    $('#aide').closeModal();
+    $('#info').closeModal();
   },
   render: function() {
+    var p1 = "Ce site est un site personnel basé sur les données fournies par le site ";
+    var p2 = ". Ces données ont été récupérées en février 2016 et ne sont pas mises à jour sur ce même site. Il se peut donc que certaines informations ne soient plus d'actualité.";
+    var p3 = "Pour toute remarque ou suggestion, n'hésitez pas à nous contacter (voir comment en bas de page).";
     return (
-      <div id="aide" className="modal">
+      <div id="info" className="modal">
         <div className="modal-content">
-          <h4>Guide utilisation de ce site</h4>
-          <p>Aide à écrire ici.</p>
+          <h4>Informations sur ce site</h4>
+          <p>{p1}<a href="https://www.data.gouv.fr/fr/datasets/base-de-donnees-publique-des-medicaments-base-officielle/">data.gouv.fr</a>{p2}</p>
+          <p>{p3}</p>
         </div>
         <div className="modal-footer">
           <a onClick={this.closeModal} className="modal-action modal-close waves-effect waves-green btn-flat">Fermer</a>
@@ -125,14 +126,54 @@ var DetailMedicament = React.createClass({
   render: function() {
     var detail = <p>Non renseigné</p>;
     if (this.state.data.presentations) {
-       detail = this.state.data.presentations.map(function(element) {
+       detail = this.state.data.presentations.map(function(element, i) {
           var endDate = element.marketing_stop_date ? element.marketing_stop_date : ' ?';
-          return <p key={element.title} >
+          var cipCodes = element.cip_codes ? element.cip_codes.join(' / ') : ' ?';
+          var generics = element.generic_groups ? element.generic_groups[0] : 'Non renseigné';
+          return <p key={i} >
                 <b>Titre</b>: {element.title} <br />
                 <b>Date de mise en vente (Année / mois / jour)</b>: {element.marketing_start_date} <br />
                 <b>Date de fin de vente (Année / mois / jour)</b>: {endDate} <br />
                 <b>Prix</b>: {element.price}€<br />
-                <b>Taux de remboursement</b>: {element.refund_rate}%<br />
+                <b>Taux de remboursement</b>: {element.refund_rate}<br />
+                <b>Codes CIP</b>: {cipCodes}<br />
+                <b>Famille générique</b> : {generics}
+            </p>;
+        });
+    }
+
+    var composition = <p>Non renseigné</p>;
+    if (this.state.data.composition) {
+       composition = this.state.data.composition.map(function(element, i) {
+          var composants = "";
+          if (element.components) {
+            for (i in element.components) {
+              composants = ((composants === "") ? "" : (composants + ' - ')) + i + ' : ' + element.components[i];
+            }
+          }
+          else {
+            composants = "Non indiqués";
+          }
+          return <p key={i} >
+                <b>Type</b>: {element.type} <br />
+                <b>Quantité</b>: {element.quantity} <br />
+                <b>Composants</b>: {composants}<br />
+            </p>;
+        });
+    }
+
+    var iab = <p>Non renseigné</p>;
+    if (this.state.data.iab) {
+      var tabIab = this.state.data.iab;
+      if (this.state.data.iab_improvements) {
+        tabIab = tabIab.concat(this.state.data.iab_improvements);
+      }
+      iab = tabIab.map(function(element, i) {
+          return <p key={i} >
+                <b>Résumé</b>: {element.abstract} <br />
+                <b>Conseil</b>: {element.advice} <br />
+                <b>Raison</b>: {element.reason}<br />
+                <b>Valeur</b>: {element.value}<br />
             </p>;
         });
     }
@@ -146,7 +187,7 @@ var DetailMedicament = React.createClass({
                   <div className="collapsible-header active"><i className="material-icons">info_outline</i>Informations générales</div>
                   <div className="collapsible-body"><p><b>Identifiant</b>: {this.state.data.id} <br />
                     <b>Fabriquant</b>: {this.state.data.authorization_holder} <br />
-                    <b>NOM</b>: {this.state.data.title} <br />
+                    <b>Nom</b>: {this.state.data.title} <br />
                     <b>Code CIS</b>: {this.state.data.cis_code}</p>
                   </div>
                 </li>
@@ -156,11 +197,11 @@ var DetailMedicament = React.createClass({
                 </li>
                 <li>
                   <div className="collapsible-header"><i className="material-icons">group_work</i>Composition</div>
-                  <div className="collapsible-body"><p>En construction...</p></div>
+                  <div className="collapsible-body">{composition}</div>
                 </li>
                 <li>
                   <div className="collapsible-header"><i className="material-icons">whatshot</i>IAB</div>
-                  <div className="collapsible-body"><p>En construction...</p></div>
+                  <div className="collapsible-body">{iab}</div>
                 </li>
               </ul>
           </div>
@@ -273,6 +314,9 @@ var Medicament = React.createClass({
 });
 
 var FabriquantList = React.createClass({
+  entrerClavier: function(event) {
+      console.log(event.target.value);
+  },
   render: function() {
     var changerPage = this.props.changerPage;
     var fabNodes = this.props.data.map(function(fabriquant) {
@@ -282,6 +326,11 @@ var FabriquantList = React.createClass({
     });
     return (
       <div className="row">
+        <div className="input-field col s4 offset-s2">
+          <i className="material-icons prefix">account_circle</i>
+          <input id="filtrerfabriquants" type="text" className="validate" onChange={this.entrerClavier} />
+          <label htmlFor="icon_prefix">Filtrer</label>
+        </div>
         <div className="col s8 offset-s2">
           <div className="collection">
             {fabNodes}
@@ -503,7 +552,7 @@ var ContentBox = React.createClass({
     return (
       <div>
         <NavBar retourAccueil={this.retourAccueil} />
-        <AideModal />
+        <InfoModal />
         <DetailMedicament />
         <RechercheModal changerPage={this.changerPage} />
         {this.afficherPage()}
