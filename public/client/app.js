@@ -314,12 +314,29 @@ var Medicament = React.createClass({
 });
 
 var FabriquantList = React.createClass({
+  getInitialState: function() {
+    return {
+      filterText: ''
+    };
+  },
   entrerClavier: function(event) {
-      console.log(event.target.value);
+      var text = event.target.value;
+      this.setState({
+        filterText: text
+      });
   },
   render: function() {
     var changerPage = this.props.changerPage;
-    var fabNodes = this.props.data.map(function(fabriquant) {
+    var text = this.state.filterText;
+    var filteredFab = this.props.data.filter(function(e){
+      if (text === '') {
+        return true;
+      }
+      if (e !==null && e._id !== null) {
+        return (e._id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+      }
+    });
+    var fabNodes = filteredFab.map(function(fabriquant) {
       return (
         <Fabriquant key={fabriquant._id} data={fabriquant} changerPage={changerPage} />
       );
