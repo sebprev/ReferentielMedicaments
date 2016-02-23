@@ -3,7 +3,7 @@
   */
 var NavBar = React.createClass({
   ouvrirAide: function(event) {
-    $('#aide').openModal();
+    $('#info').openModal();
   },
   ouvrirRecherche: function(event) {
     $('#recherche').openModal();
