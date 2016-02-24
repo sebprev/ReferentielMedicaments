@@ -12,6 +12,7 @@ var NavBar = React.createClass({
     this.props.retourAccueil();
   },
   render: function() {
+    //<li><a className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i className="material-icons">more_vert</i></a></li>
     return (
       <div className="navbar-fixed">
       <nav>
@@ -21,7 +22,6 @@ var NavBar = React.createClass({
             <li><a onClick={this.ouvrirRecherche} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Rechercher un médicament"><i className="material-icons">search</i></a></li>
             <li><a onClick={this.retourAccueil} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Page accueil"><i className="material-icons">view_list</i></a></li>
             <li><a onClick={this.ouvrirAide} className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Aide"><i className="material-icons">info</i></a></li>
-            <li><a className="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Actions"><i className="material-icons">more_vert</i></a></li>
           </ul>
         </div>
       </nav>
