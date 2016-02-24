@@ -33,7 +33,7 @@ var App = function(){
         // On ne veut pas plus de 100 documents remontés...
         self.db.collection('medicaments').find().limit( 100 ).toArray(function(err, medocs) {
             res.header("Content-Type:","application/json; charset=utf-8");
-            res.end(JSON.stringify(medocs, null, 3));
+            res.end(JSON.stringify(medocs));
         });
     };
 
@@ -45,7 +45,8 @@ var App = function(){
         self.db.collection('medicaments').find({'id':idMedoc}).toArray(function(err, medoc){
             res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
-            res.end(JSON.stringify(medoc, null, 3));
+            //res.end(JSON.stringify(medoc, null, 3));
+            res.end(JSON.stringify(medoc));
         });
     }
 
@@ -56,7 +57,8 @@ var App = function(){
         self.db.collection('medicaments').find({'title': pattern}).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
-            res.end(JSON.stringify(medocs, null, 3));
+            // res.end(JSON.stringify(medocs, null, 3));
+            res.end(JSON.stringify(medocs));
         });
     }
 
@@ -67,7 +69,8 @@ var App = function(){
         self.db.collection('medicaments').find({'authorization_holder': pattern}).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
-            res.end(JSON.stringify(medocs, null, 3));
+            //res.end(JSON.stringify(medocs, null, 3));
+            res.end(JSON.stringify(medocs));
         });
     }
 
@@ -76,7 +79,8 @@ var App = function(){
         self.db.collection('medicaments').find({'authorization_holder': req.params.nom}).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
             // Retourne le JSON (on force le mode 'pretty')
-            res.end(JSON.stringify(medocs, null, 3));
+            //res.end(JSON.stringify(medocs, null, 3));
+            res.end(JSON.stringify(medocs));
         });
     }
     

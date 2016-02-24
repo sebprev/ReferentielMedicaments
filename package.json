@@ -13,10 +13,10 @@
     "email": "webmuret@gmail.com",
     "url": "http://sebastien.prevost31.free.fr"
   },
-  "homepage": "http://nodejs-sebprev.rhcloud.com",
+  "homepage": "http://medicaments-sebprev.rhcloud.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sebprev/node_mongo_start.git"
+    "url": "https://github.com/sebprev/ReferentielMedicaments.git"
   },
 
   "engines": {
