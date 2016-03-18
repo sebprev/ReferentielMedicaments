@@ -255,7 +255,7 @@ var RechercheModal = React.createClass({
                     <div className="input-field col s6">
                       <i className="material-icons prefix">account_circle</i>
                       <input id="inputMedicament" type="text" className="validate" onKeyPress={this.entrerClavier} />
-                      <label htmlFor="icon_prefix">Saisir ici le médicament</label>
+                      <label htmlFor="inputMedicament">Saisir ici le médicament</label>
                     </div>
                   </div>
                 </form>
@@ -346,7 +346,7 @@ var FabriquantList = React.createClass({
         <div className="input-field col s4 offset-s2">
           <i className="material-icons prefix">account_circle</i>
           <input id="filtrerfabriquants" type="text" className="validate" onChange={this.entrerClavier} />
-          <label htmlFor="icon_prefix">Filtrer</label>
+          <label htmlFor="filtrerfabriquants">Filtrer</label>
         </div>
         <div className="col s8 offset-s2">
           <div className="collection">
