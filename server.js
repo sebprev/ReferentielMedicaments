@@ -121,7 +121,7 @@ var App = function(){
     // override with POST having ?_method=DELETE
     self.app.use(methodOverride('_method'))
 
-    self.app.use(express.static('public'));
+    self.app.use(express.static('public'), { maxage: 864000000 });
     //define all the url mappings
     self.app.get('/health', self.routes['health']);
    // self.app.get('/', self.routes['root']);
