@@ -86,17 +86,10 @@ var App = function(){
     
      // Retourne le nombre de medocs par fabriquant
     self.routes['nbMedocsByFabriquant'] = function(req, res){
-	    res.header("Content-Type:","application/json; charset=utf-8");
-    	if (self.cache['nbMedocsByFabriquant']) {
-    		res.end(self.cache['nbMedocsByFabriquant']);
-    	}
-    	else {
-	        self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
-	            self.cache['nbMedocsByFabriquant'] = JSON.stringify(medocs);
-	            res.end(JSON.stringify(medocs));
-	        });
-    		
-    	}
+        self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
+            res.header("Content-Type:","application/json; charset=utf-8","Cache-Control", "public, max-age=31557600");
+            res.end(JSON.stringify(medocs));
+        });
     }
 
     // Enregistre un médicament
