@@ -88,6 +88,8 @@ var App = function(){
     self.routes['nbMedocsByFabriquant'] = function(req, res){
         self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
+
+            // On ajoute un gestion de cache sur cette requete
             res.setHeader("Cache-Control", "public, max-age=31557600");
             res.end(JSON.stringify(medocs));
         });
@@ -122,6 +124,7 @@ var App = function(){
     // override with POST having ?_method=DELETE
     self.app.use(methodOverride('_method'))
 
+    // Tous les elements statiques peuvent être mis en cache
     self.app.use('/static/js', express.static('public/js', { maxAge: 864000000 }));
     self.app.use('/static/css', express.static('public/css', { maxAge: 864000000 }));
     self.app.use('/static/font', express.static('public/font', { maxAge: 864000000 }));
