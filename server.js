@@ -121,10 +121,10 @@ var App = function(){
     // override with POST having ?_method=DELETE
     self.app.use(methodOverride('_method'))
 
-    self.app.use(express.static('public/js', { maxAge: 864000000 }));
-    self.app.use(express.static('public/css', { maxAge: 864000000 }));
-    self.app.use(express.static('public/font', { maxAge: 864000000 }));
-    self.app.use(express.static('public/img', { maxAge: 864000000 }));
+    self.app.use('/static/js', express.static('public/js', { maxAge: 864000000 }));
+    self.app.use('/static/css', express.static('public/css', { maxAge: 864000000 }));
+    self.app.use('/static/font', express.static('public/font', { maxAge: 864000000 }));
+    self.app.use('/static/img', express.static('public/img', { maxAge: 864000000 }));
     self.app.use(express.static('public'));
     
     //define all the url mappings
