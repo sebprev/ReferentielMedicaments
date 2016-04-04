@@ -9,14 +9,26 @@ var App = function(){
     // Scope
     var self = this;
 
-    // Setup
-    self.dbServer = new mongodb.Server(process.env.OPENSHIFT_MONGODB_DB_HOST,parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT));
-    self.db = new mongodb.Db(process.env.OPENSHIFT_APP_NAME, self.dbServer, {auto_reconnect: true});
-    self.dbUser = process.env.OPENSHIFT_MONGODB_DB_USERNAME;
-    self.dbPass = process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
+    // Setup Openshift
+    if (process.env.OPENSHIFT_MONGODB_DB_HOST) {
+    	self.dbServer = new mongodb.Server(process.env.OPENSHIFT_MONGODB_DB_HOST,parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT));
+    	self.db = new mongodb.Db(process.env.OPENSHIFT_APP_NAME, self.dbServer, {auto_reconnect: true});
+	    self.dbUser = process.env.OPENSHIFT_MONGODB_DB_USERNAME;
+	    self.dbPass = process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
+    	
+    }
 
-    self.ipaddr  = process.env.OPENSHIFT_NODEJS_IP;
+    // Setup local
+    else {
+    	self.dbServer = new mongodb.Server("localhost",parseInt(27017));
+    	self.db = new mongodb.Db("medicaments", self.dbServer, {auto_reconnect: true});
+	    self.dbUser = process.env.MONGODB_USER_ADMIN;
+	    self.dbPass = process.env.MONGODB_PASS_ADMIN;
+    }
+
+    self.ipaddr  = process.env.OPENSHIFT_NODEJS_IP  || '127.0.0.1';
     self.port    = parseInt(process.env.OPENSHIFT_NODEJS_PORT) || 8080;
+
     if (typeof self.ipaddr === "undefined") {
         console.warn('No OPENSHIFT_NODEJS_IP environment variable');
     };
@@ -88,7 +100,6 @@ var App = function(){
     self.routes['nbMedocsByFabriquant'] = function(req, res){
         self.db.collection('medicaments').aggregate([{$group : {_id:'$authorization_holder', count:{$sum:1}}}]).toArray(function(err, medocs){
             res.header("Content-Type:","application/json; charset=utf-8");
-
             // On ajoute un gestion de cache sur cette requete
             res.setHeader("Cache-Control", "public, max-age=31557600");
             res.end(JSON.stringify(medocs));
