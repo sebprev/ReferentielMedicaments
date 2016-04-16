@@ -130,11 +130,12 @@ var DetailMedicament = React.createClass({
           var endDate = element.marketing_stop_date ? element.marketing_stop_date : ' ?';
           var cipCodes = element.cip_codes ? element.cip_codes.join(' / ') : ' ?';
           var generics = element.generic_groups ? element.generic_groups[0] : 'Non renseigné';
+          var price = element.price ? ((element.price / 100) + '€') :  ' ?';
           return <p key={i} >
                 <b>Titre</b>: {element.title} <br />
                 <b>Date de mise en vente (Année / mois / jour)</b>: {element.marketing_start_date} <br />
                 <b>Date de fin de vente (Année / mois / jour)</b>: {endDate} <br />
-                <b>Prix</b>: {element.price}€<br />
+                <b>Prix</b>: {price}<br />
                 <b>Taux de remboursement</b>: {element.refund_rate}<br />
                 <b>Codes CIP</b>: {cipCodes}<br />
                 <b>Famille générique</b> : {generics}
