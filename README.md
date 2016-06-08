@@ -16,5 +16,7 @@ En cours de développement et non entièrement industrialisé (il faudrait utili
 
 Pour avoir les logs serveur:
 ```
-rhc tail -a nodejs
+rhc tail -a medicaments
 ```
+Liste des commandes rhc:
+https://developers.openshift.com/managing-your-applications/common-rhc-commands.html
