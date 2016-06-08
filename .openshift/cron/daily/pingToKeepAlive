@@ -1,0 +1,3 @@
+#! /bin/bash
+curl http://medicaments-sebprev.rhcloud.com
+date > $OPENSHIFT_LOG_DIR/lastrefresh.log

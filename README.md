@@ -20,3 +20,10 @@ rhc tail -a medicaments
 ```
 Liste des commandes rhc:
 https://developers.openshift.com/managing-your-applications/common-rhc-commands.html
+
+==================
+
+Pour vérifier le last refresh fait par CRON:
+```
+rhc tail -f app-root/logs/lastrefresh.log -a medicaments
+```
